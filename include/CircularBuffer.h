@@ -5,18 +5,20 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "async/IWSServerConfig.h"
+#include "IBuffer.h"
+#include "IBufferView.h"
+#include "IBufferConfig.h"
 
 using namespace std;
 
-namespace WSServer
-{
 
-	class CircularBuffer {
+	class CircularBuffer : public IBuffer 
+	{
 
 	public:
 
-		class View {
+		class View : public IBufferView 
+		{
 
 		public:
 
@@ -30,6 +32,21 @@ namespace WSServer
 				_buffer.pop_back();
 			}
 
+    		bool is_authenticated() const final
+			{
+				return true;
+			}
+
+    		tcp_socket& get_socket() final
+			{
+
+			}
+
+    		Session& get_session() final
+			{
+
+			}
+
 		private:
 
 
@@ -38,13 +55,13 @@ namespace WSServer
 			
 		};
 
-		CircularBuffer(shared_ptr<IWSServerConfig> config) :
+		CircularBuffer(shared_ptr<IBufferConfig> config) :
 			_config{ config },
 			_buffer_size{ config->get_buffer_size() }
 		{
 		}
 
-		shared_ptr<View> next_view()
+		shared_ptr<IBufferView> next_view()
 		{
 			boost::mutex::scoped_lock lock(_mutex);
 			_not_full.wait(lock, bind(&CircularBuffer::is_not_full, this));
@@ -78,7 +95,9 @@ namespace WSServer
 			return _unread < _buffer_size;
 		}
 
-		shared_ptr<IWSServerConfig> _config;
+		size_t _unread{0};
+		size_t _buff_idx{0};
+		shared_ptr<IBufferConfig> _config;
 		size_t _buffer_size;
 		boost::mutex _mutex;
 		boost::condition _not_empty;
@@ -86,4 +105,3 @@ namespace WSServer
 
 	};
 
-}
