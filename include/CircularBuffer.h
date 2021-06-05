@@ -22,9 +22,9 @@ public:
 	public:
 
 		View(CircularBuffer& buffer, size_t idx)
-			:_buffer{buffer},
+			:_buffer{ buffer },
 			_idx{ idx },
-			_socket{buffer.get_ioc_list()[idx]}
+			_socket{ buffer.get_ioc_list()[idx] }
 		{}
 
 		~View()
@@ -39,16 +39,12 @@ public:
 
     	tcp_socket get_socket() final
 		{
-			// return std::move(_socket);
+			return std::move(_socket);
 		}
 
-	    io_context& get_ioc() final
+		tcp_socket& get_socket_ref() final
 		{
-		}
-
-    	void set_socket(tcp_socket&& socket) final
-		{
-			// _socket = std::move(socket);
+			return _socket;
 		}
 
 	private:
@@ -59,9 +55,10 @@ public:
 			
 	};
 
-	CircularBuffer(shared_ptr<IBufferConfig> config) :
-		_config{ config },
-		_buffer_size{ config->get_buffer_size() }
+	CircularBuffer(shared_ptr<IBufferConfig> config) 
+		: _config{ config },
+		_buffer_size{ config->get_buffer_size() },
+		_ioc_list{ vector<io_context>(_buffer_size) }
 	{
 	}
 
@@ -89,7 +86,7 @@ public:
 
 	vector<io_context>& get_ioc_list() final 
 	{
-
+		return _ioc_list;
 	}
 
 private:
@@ -111,6 +108,7 @@ private:
 	boost::mutex _mutex;
 	boost::condition _not_empty;
 	boost::condition _not_full;
+	vector<io_context> _ioc_list;
 
 };
 

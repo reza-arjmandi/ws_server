@@ -57,8 +57,7 @@ public:
     
     void exec(shared_ptr<IBufferView> view) final
     {
-        auto socket = _acceptor.accept(view->get_ioc());
-        view->set_socket(std::move(socket));
+        _acceptor.accept(view->get_socket_ref());
         if(!_next)
         {
             return;

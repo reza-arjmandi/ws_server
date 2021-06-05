@@ -14,7 +14,6 @@ public:
     
     virtual bool is_authenticated() const = 0;
     virtual tcp_socket get_socket() = 0;
-    virtual void set_socket(tcp_socket&& socket) = 0;
-    virtual io_context& get_ioc() = 0;
+    virtual tcp_socket& get_socket_ref() = 0;
 
 };
