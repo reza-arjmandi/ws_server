@@ -18,9 +18,15 @@ class PipelineFactory : public IPipelineFactory
 
 public:
 
-    PipelineFactory(tcp_endpoint endpoint)
+    PipelineFactory(
+        tcp_endpoint endpoint, 
+        shared_ptr<IWork> session_executor,
+        shared_ptr<IWork> authenticator)
     {
-        _deps = make_shared<PipelineDependencies>(endpoint);
+        _deps = make_shared<PipelineDependencies>(
+            endpoint, 
+            session_executor,
+            authenticator);
     }
 
 	shared_ptr<IPipeline> create(function<void()> push_buffer) final

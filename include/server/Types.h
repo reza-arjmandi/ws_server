@@ -5,7 +5,7 @@
 #include "async/Stage.h"
 #include "ws_server/CircularBuffer.h"
 
-namespace WSServer {
+namespace Server {
 
 	using namespace std;
 	using namespace Async;

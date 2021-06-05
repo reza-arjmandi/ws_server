@@ -14,8 +14,11 @@ public:
 
     using tcp_endpoint = boost::asio::ip::tcp::endpoint;
 
-    Config(tcp_endpoint endpoint)
-    : _pipeline_factory{ endpoint }
+    Config(
+        tcp_endpoint endpoint, 
+        shared_ptr<IWork> session_executor,
+        shared_ptr<IWork> authenticator)
+    : _pipeline_factory{ endpoint, session_executor, authenticator}
     {
     }
 

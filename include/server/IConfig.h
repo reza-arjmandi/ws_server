@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace WSServer
+namespace Server
 {
 
     using namespace std;

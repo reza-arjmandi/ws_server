@@ -3,7 +3,7 @@
 #include "IWork.h"
 #include "Session.h"
 
-class SessionExecutor : public IWork
+class WSSessionExecutor : public IWork
 {
 
 public:

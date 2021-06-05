@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "WSServer.h"
+#include "TCPServer.h"
 
 #include "tests/MockConfig.h"
 #include "tests/MockBufferFactory.h"
@@ -33,7 +33,7 @@ public:
         EXPECT_CALL(_pipeline_factory, create(_)).WillOnce(
             DoAll(SaveArg<0>(&_push_buffer), Return(_pipeline)));
     
-        _server = make_unique<WSServer>(_config);
+        _server = make_unique<TCPServer>(_config);
     }
 
     void TearDown() final
@@ -77,7 +77,7 @@ public:
         make_shared<MockBuffer>() };
     shared_ptr<MockBufferView> _buffer_view{ 
         make_shared<MockBufferView>() };
-    unique_ptr<WSServer> _server;
+    unique_ptr<TCPServer> _server;
 
 }; 
 

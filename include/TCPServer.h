@@ -6,19 +6,19 @@
 
 using namespace std;
 
-class WSServer
+class TCPServer
 {
 
 public:
 
-    WSServer(shared_ptr<IConfig> config)
+    TCPServer(shared_ptr<IConfig> config)
     {
         _buffer = config->get_buffer_factory().create();
         _pipeline = config->get_pipeline_factory().create(
             [&](){push_buffer();});
     }
 
-    ~WSServer()
+    ~TCPServer()
     {
         stop();
     }

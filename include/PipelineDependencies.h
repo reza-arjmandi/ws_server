@@ -5,7 +5,6 @@
 #include "IPipelineDependencies.h"
 #include "StageFactory.h"
 #include "Acceptor.h"
-#include "SessionExecutor.h"
 #include "NoAuth.h"
 
 class PipelineDependencies : public IPipelineDependencies
@@ -15,7 +14,12 @@ class PipelineDependencies : public IPipelineDependencies
 
 public:
 
-    PipelineDependencies(tcp_endpoint endpoint)
+    PipelineDependencies(
+        tcp_endpoint endpoint, 
+        shared_ptr<IWork> session_executor,
+        shared_ptr<IWork> authenticator)
+        :_session_executor{ session_executor },
+        _auth{ authenticator }
     {
         _acceptor = make_shared<Acceptor>(endpoint);
     }
@@ -44,8 +48,7 @@ private:
 
     StageFactory _stage_factory;
     shared_ptr<Acceptor> _acceptor;
-    shared_ptr<SessionExecutor> _session_executor{
-        make_shared<SessionExecutor>()};
-    shared_ptr<NoAuth> _auth{ make_shared<NoAuth>() };
+    shared_ptr<IWork> _session_executor;
+    shared_ptr<IWork> _auth;
 
 };
