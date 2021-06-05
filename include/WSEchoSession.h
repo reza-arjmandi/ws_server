@@ -23,14 +23,14 @@ namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp; 
 
     // Echoes back all received WebSocket messages
-class Session : public std::enable_shared_from_this<Session>
+class WSEchoSession : public std::enable_shared_from_this<WSEchoSession>
 {
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer buffer_;
 
 public:
     // Take ownership of the socket
-    explicit Session(tcp::socket&& socket)
+    explicit WSEchoSession(tcp::socket&& socket)
     : ws_(std::move(socket))
     {
     }
@@ -38,12 +38,12 @@ public:
     void run()
     {
         // We need to be executing within a strand to perform async operations
-        // on the I/O objects in this Session. Although not strictly necessary
+        // on the I/O objects in this WSEchoSession. Although not strictly necessary
         // for single-threaded contexts, this example code is written to be
         // thread-safe by default.
         net::dispatch(ws_.get_executor(),
             beast::bind_front_handler(
-                &Session::on_run,
+                &WSEchoSession::on_run,
                 shared_from_this()));
     }
 
@@ -65,7 +65,7 @@ public:
         // Accept the websocket handshake
         ws_.async_accept(
             beast::bind_front_handler(
-                &Session::on_accept,
+                &WSEchoSession::on_accept,
                 shared_from_this()));
     }
 
@@ -83,7 +83,7 @@ public:
         ws_.async_read(
             buffer_,
             beast::bind_front_handler(
-                &Session::on_read,
+                &WSEchoSession::on_read,
                 shared_from_this()));
     }
 
@@ -92,7 +92,7 @@ public:
         std::size_t bytes_transferred)
     {
         boost::ignore_unused(bytes_transferred);
-        // This indicates that the Session was closed
+        // This indicates that the WSEchoSession was closed
         if(ec == websocket::error::closed)
             return;
         if(ec)
@@ -102,7 +102,7 @@ public:
         ws_.async_write(
             buffer_.data(),
             beast::bind_front_handler(
-                &Session::on_write,
+                &WSEchoSession::on_write,
                 shared_from_this()));
     }
 

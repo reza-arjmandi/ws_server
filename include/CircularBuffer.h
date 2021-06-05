@@ -11,97 +11,106 @@
 
 using namespace std;
 
+class CircularBuffer : public IBuffer 
+{
 
-	class CircularBuffer : public IBuffer 
+public:
+
+	class View : public IBufferView 
 	{
 
 	public:
 
-		class View : public IBufferView 
+		View(CircularBuffer& buffer, size_t idx)
+			:_buffer{buffer},
+			_idx{ idx },
+			_socket{buffer.get_ioc_list()[idx]}
+		{}
+
+		~View()
 		{
+			_buffer.pop_back();
+		}
 
-		public:
+    	bool is_authenticated() const final
+		{
+			return true;
+		}
 
-			View(CircularBuffer& buffer, size_t idx)
-				:_buffer{ buffer },
-				_idx{ idx }
-			{}
+    	tcp_socket get_socket() final
+		{
+			// return std::move(_socket);
+		}
 
-			~View()
-			{
-				_buffer.pop_back();
-			}
-
-    		bool is_authenticated() const final
-			{
-				return true;
-			}
-
-    		tcp_socket& get_socket() final
-			{
-
-			}
-
-    		Session& get_session() final
-			{
-
-			}
-
-		private:
-
-
-			CircularBuffer& _buffer;
-			size_t _idx;
-			
-		};
-
-		CircularBuffer(shared_ptr<IBufferConfig> config) :
-			_config{ config },
-			_buffer_size{ config->get_buffer_size() }
+	    io_context& get_ioc() final
 		{
 		}
 
-		shared_ptr<IBufferView> next_view()
+    	void set_socket(tcp_socket&& socket) final
 		{
-			boost::mutex::scoped_lock lock(_mutex);
-			_not_full.wait(lock, bind(&CircularBuffer::is_not_full, this));
-			if (_buff_idx >= _buffer_size) {
-				_buff_idx = 0;
-			}
-			++_unread;
-			lock.unlock();
-			_not_empty.notify_one();
-			return make_shared<View>(*this, _buff_idx++);
-		}
-
-		void pop_back()
-		{
-			boost::mutex::scoped_lock lock(_mutex);
-			_not_empty.wait(lock, bind(&CircularBuffer::is_not_empty, this));
-			--_unread;
-			lock.unlock();
-			_not_full.notify_one();
+			// _socket = std::move(socket);
 		}
 
 	private:
 
-		bool is_not_empty() const
-		{
-			return _unread > 0;
-		}
-
-		bool is_not_full() const
-		{
-			return _unread < _buffer_size;
-		}
-
-		size_t _unread{0};
-		size_t _buff_idx{0};
-		shared_ptr<IBufferConfig> _config;
-		size_t _buffer_size;
-		boost::mutex _mutex;
-		boost::condition _not_empty;
-		boost::condition _not_full;
-
+		CircularBuffer& _buffer;
+		size_t _idx;
+		tcp_socket _socket;
+			
 	};
+
+	CircularBuffer(shared_ptr<IBufferConfig> config) :
+		_config{ config },
+		_buffer_size{ config->get_buffer_size() }
+	{
+	}
+
+	shared_ptr<IBufferView> next_view()
+	{
+		boost::mutex::scoped_lock lock(_mutex);
+		_not_full.wait(lock, bind(&CircularBuffer::is_not_full, this));
+		if (_buff_idx >= _buffer_size) {
+			_buff_idx = 0;
+		}
+		++_unread;
+		lock.unlock();
+		_not_empty.notify_one();
+		return make_shared<View>(*this, _buff_idx++);
+	}
+
+	void pop_back()
+	{
+		boost::mutex::scoped_lock lock(_mutex);
+		_not_empty.wait(lock, bind(&CircularBuffer::is_not_empty, this));
+		--_unread;
+		lock.unlock();
+		_not_full.notify_one();
+	}
+
+	vector<io_context>& get_ioc_list() final 
+	{
+
+	}
+
+private:
+
+	bool is_not_empty() const
+	{
+		return _unread > 0;
+	}
+
+	bool is_not_full() const
+	{
+		return _unread < _buffer_size;
+	}
+
+	size_t _unread{0};
+	size_t _buff_idx{0};
+	shared_ptr<IBufferConfig> _config;
+	size_t _buffer_size;
+	boost::mutex _mutex;
+	boost::condition _not_empty;
+	boost::condition _not_full;
+
+};
 

@@ -2,19 +2,19 @@
 
 #include <boost/asio.hpp>
 
-#include "IConfig.h"
+#include "ITCPServerDependencies.h"
 #include "BufferFactory.h"
 #include "PipelineFactory.h"
 #include "StageFactory.h"
 
-class Config : public IConfig
+class TCPServerDependencies : public ITCPServerDependencies
 {
 
 public:
 
     using tcp_endpoint = boost::asio::ip::tcp::endpoint;
 
-    Config(
+    TCPServerDependencies(
         tcp_endpoint endpoint, 
         shared_ptr<IWork> session_executor,
         shared_ptr<IWork> authenticator)

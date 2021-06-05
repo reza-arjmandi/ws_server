@@ -1,16 +1,16 @@
 #pragma once
 
 #include "IWork.h"
-#include "Session.h"
+#include "WSEchoSession.h"
 
-class WSSessionExecutor : public IWork
+class WSEchoSessionEx : public IWork
 {
 
 public:
 
     void exec(shared_ptr<IBufferView> view) final
     {
-        view->get_session().run();
+        make_shared<WSEchoSession>(view->get_socket())->run();
     }
 
     void next(function<void(shared_ptr<IBufferView>)>) final

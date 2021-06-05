@@ -3,9 +3,9 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "IConfig.h"
+#include "ITCPServerDependencies.h"
 
-class MockConfig : public IConfig
+class MockConfig : public ITCPServerDependencies
 {
 
 public:

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Acceptor : public IWork
+class TCPAcceptor : public IWork
 {
 
     using tcp_endpoint = boost::asio::ip::tcp::endpoint;
@@ -21,7 +21,7 @@ class Acceptor : public IWork
 
 public:
 
-    Acceptor(tcp_endpoint endpoint)
+    TCPAcceptor(tcp_endpoint endpoint)
     {
         error_code ec;
         _acceptor.open(endpoint.protocol(), ec);
@@ -57,7 +57,8 @@ public:
     
     void exec(shared_ptr<IBufferView> view) final
     {
-        _acceptor.accept(view->get_socket());
+        auto socket = _acceptor.accept(view->get_ioc());
+        view->set_socket(std::move(socket));
         if(!_next)
         {
             return;

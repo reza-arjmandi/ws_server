@@ -5,14 +5,14 @@
 #include "IBufferFactory.h"
 #include "IPipelineFactory.h"
 
-class IConfig
+class ITCPServerDependencies
 {
     
 public:
 
     using tcp_endpoint = boost::asio::ip::tcp::endpoint;
 
-    virtual ~IConfig() = default;
+    virtual ~ITCPServerDependencies() = default;
 
     virtual void set_endpoint(tcp_endpoint) = 0;
     virtual tcp_endpoint get_endpoint() const = 0;

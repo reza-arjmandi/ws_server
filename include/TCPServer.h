@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "IConfig.h"
+#include "ITCPServerDependencies.h"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ class TCPServer
 
 public:
 
-    TCPServer(shared_ptr<IConfig> config)
+    TCPServer(shared_ptr<ITCPServerDependencies> config)
     {
         _buffer = config->get_buffer_factory().create();
         _pipeline = config->get_pipeline_factory().create(
