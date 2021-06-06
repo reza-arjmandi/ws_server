@@ -14,7 +14,7 @@ public:
 
     shared_ptr<IStage> create(shared_ptr<IWork> work)
     {
-        make_shared<Stage>(work);
+        return make_shared<Stage>(work);
     }
 
 };

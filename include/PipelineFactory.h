@@ -8,13 +8,12 @@
 #include "IPipelineFactory.h"
 #include "Pipeline.h"
 #include "PipelineDependencies.h"
+#include "Types.h"
 
 using namespace std;
 
 class PipelineFactory : public IPipelineFactory 
 {
-
-    using tcp_endpoint = boost::asio::ip::tcp::endpoint;
 
 public:
 
@@ -31,7 +30,7 @@ public:
 
 	shared_ptr<IPipeline> create(function<void()> push_buffer) final
     {
-        return make_shared<Pipeline>(_deps);
+        return make_shared<Pipeline>(_deps, push_buffer);
     }
 
 private:

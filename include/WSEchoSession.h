@@ -1,12 +1,6 @@
 #pragma once 
 
 #include <memory>
-
-#include <boost/beast/core.hpp>
-#include <boost/beast/websocket.hpp>
-#include <boost/asio/dispatch.hpp>
-#include <boost/asio/strand.hpp>
-
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -16,17 +10,12 @@
 #include <thread>
 #include <vector>
 
-namespace beast = boost::beast;  
-namespace http = beast::http; 
-namespace websocket = beast::websocket;
-namespace net = boost::asio; 
-using tcp = boost::asio::ip::tcp; 
+#include "Active.h"
+#include "Types.h"
 
-    // Echoes back all received WebSocket messages
+// Echoes back all received WebSocket messages
 class WSEchoSession : public std::enable_shared_from_this<WSEchoSession>
 {
-    websocket::stream<beast::tcp_stream> ws_;
-    beast::flat_buffer buffer_;
 
 public:
     // Take ownership of the socket
@@ -45,6 +34,10 @@ public:
             beast::bind_front_handler(
                 &WSEchoSession::on_run,
                 shared_from_this()));
+        _active.send([&](){
+            auto& ex{ static_cast<io_context&>(ws_.get_executor().context()) };
+            ex.run();
+        });
     }
 
     // Start the asynchronous operation
@@ -124,5 +117,11 @@ public:
     {
         std::cerr << what << ": " << ec.message() << "\n";
     }
+
+private:
+
+    websocket::stream<beast::tcp_stream> ws_;
+    beast::flat_buffer buffer_;
+    Active _active;
 
 };

@@ -1,24 +1,24 @@
 #pragma once
 
-#include <boost/asio.hpp>
-
 #include "ITCPServerDependencies.h"
 #include "BufferFactory.h"
 #include "PipelineFactory.h"
 #include "StageFactory.h"
+#include "Types.h"
 
 class TCPServerDependencies : public ITCPServerDependencies
 {
 
 public:
 
-    using tcp_endpoint = boost::asio::ip::tcp::endpoint;
-
     TCPServerDependencies(
         tcp_endpoint endpoint, 
         shared_ptr<IWork> session_executor,
         shared_ptr<IWork> authenticator)
-    : _pipeline_factory{ endpoint, session_executor, authenticator}
+    : _pipeline_factory{ 
+        endpoint, 
+        session_executor, 
+        authenticator}
     {
     }
 

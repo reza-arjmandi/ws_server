@@ -9,6 +9,7 @@ public:
 
 	void exec(shared_ptr<IBufferView> view) final
     {
+        view->set_authentication_result(true);
         if(!_next)
         {
             return;

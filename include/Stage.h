@@ -31,9 +31,9 @@ public:
 		_active.stop();
 	}
 
-	private:
+private:
 
-		shared_ptr<IWork> _work;
-		Active _active;
+	shared_ptr<IWork> _work;
+	Active _active;
 
-	};
+};

@@ -43,7 +43,7 @@ public:
         EXPECT_CALL(_stage_factory, create(Eq(_acceptor))).WillOnce(
             Return(_accept_stage));
 
-        _pipeline = make_unique<Pipeline>(_deps);
+        _pipeline = make_unique<Pipeline>(_deps, _push_buffer.AsStdFunction());
     }
     
     void TearDown() final
@@ -61,6 +61,7 @@ public:
     MockStageFactory _stage_factory;
     bool _is_stopped{ false };
 
+    MockFunction<void()> _push_buffer;
     shared_ptr<MockPipelineDependencies> _deps{ 
         make_shared<MockPipelineDependencies>() };
     shared_ptr<MockWork> _session_factory{ 
@@ -116,6 +117,7 @@ TEST_F(PipelineTests, test_stop_when_is_called_more_than_once)
 TEST_F(PipelineTests, test_next_of_accpet)
 {
     EXPECT_CALL(*_auth_stage, process(Eq(_buffer_view))).Times(1);
+    EXPECT_CALL(_push_buffer, Call()).Times(1);
 
     _next_accept(_buffer_view);
 }

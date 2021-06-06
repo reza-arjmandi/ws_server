@@ -8,6 +8,7 @@
 #include "IBuffer.h"
 #include "IBufferView.h"
 #include "IBufferConfig.h"
+#include "Types.h"
 
 using namespace std;
 
@@ -32,9 +33,14 @@ public:
 			_buffer.pop_back();
 		}
 
+    	void set_authentication_result(bool result) final
+		{
+			_auth_result = result;
+		}
+
     	bool is_authenticated() const final
 		{
-			return true;
+			return _auth_result;
 		}
 
     	tcp_socket get_socket() final
@@ -52,7 +58,8 @@ public:
 		CircularBuffer& _buffer;
 		size_t _idx;
 		tcp_socket _socket;
-			
+		bool _auth_result{ false };
+
 	};
 
 	CircularBuffer(shared_ptr<IBufferConfig> config) 
@@ -101,8 +108,8 @@ private:
 		return _unread < _buffer_size;
 	}
 
-	size_t _unread{0};
-	size_t _buff_idx{0};
+	size_t _unread{ 0 };
+	size_t _buff_idx{ 0 };
 	shared_ptr<IBufferConfig> _config;
 	size_t _buffer_size;
 	boost::mutex _mutex;

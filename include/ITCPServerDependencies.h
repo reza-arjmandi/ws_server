@@ -4,13 +4,12 @@
 
 #include "IBufferFactory.h"
 #include "IPipelineFactory.h"
+#include "Types.h"
 
 class ITCPServerDependencies
 {
     
 public:
-
-    using tcp_endpoint = boost::asio::ip::tcp::endpoint;
 
     virtual ~ITCPServerDependencies() = default;
 

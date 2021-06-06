@@ -10,8 +10,6 @@
 class PipelineDependencies : public IPipelineDependencies
 {
     
-    using tcp_endpoint = boost::asio::ip::tcp::endpoint;
-
 public:
 
     PipelineDependencies(

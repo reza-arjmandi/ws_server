@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "IBufferView.h"
-
-#include <vector>
+#include "Types.h"
 
 using namespace std;
 
@@ -12,8 +12,6 @@ class IBuffer
 {
     
 public:
-
-    using io_context = boost::asio::io_context; 
 
     virtual ~IBuffer() = default;
 

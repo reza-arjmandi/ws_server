@@ -21,6 +21,6 @@ public:
 
 private:
 
-    size_t _size{20};
+    size_t _size{ 20 };
 
 };

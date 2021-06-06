@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "ITCPServerDependencies.h"
-
+ 
 using namespace std;
 
 class TCPServer
@@ -43,6 +43,8 @@ public:
         _is_run = false;
     }
 
+private:
+
     void push_buffer()
     {
         if(!_is_run)
@@ -53,9 +55,7 @@ public:
             _buffer->next_view());
     }
 
-private:
-
-    bool _is_run{false};
+    bool _is_run{ false };
     shared_ptr<IBuffer> _buffer;
     shared_ptr<IPipeline> _pipeline;
 

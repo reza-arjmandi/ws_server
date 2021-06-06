@@ -2,28 +2,21 @@
 
 #include <iostream>
 
-#include <boost/asio.hpp>
-#include <boost/beast.hpp>
-
 #include "IWork.h"
+#include "Types.h"
 
 using namespace std;
 
 class TCPAcceptor : public IWork
 {
 
-    using tcp_endpoint = boost::asio::ip::tcp::endpoint;
-    using io_context = boost::asio::io_context;
-    using tcp_acceptor = boost::asio::ip::tcp::acceptor;
-    using error_code = boost::beast::error_code;
-    using reuse_address = boost::asio::socket_base::reuse_address;
-    int max_listen_connections = boost::asio::socket_base::max_listen_connections;
+    int max_listen_connections = net::socket_base::max_listen_connections;
 
 public:
 
     TCPAcceptor(tcp_endpoint endpoint)
     {
-        error_code ec;
+        beast::error_code ec;
         _acceptor.open(endpoint.protocol(), ec);
         if(ec)
         {
@@ -72,7 +65,7 @@ public:
 
 private:
 
-    void fail(error_code ec, char const* what)
+    void fail(beast::error_code ec, char const* what)
     {
         cerr << what << ": " << ec.message() << "\n";
     }

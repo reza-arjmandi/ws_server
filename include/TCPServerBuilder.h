@@ -5,6 +5,7 @@
 #include "TCPServerDependencies.h"
 #include "TCPServer.h"
 #include "NoAuth.h"
+#include "Types.h"
 
 using namespace std;
 
@@ -37,12 +38,11 @@ public:
         return *this;
     }
 
-
     shared_ptr<TCPServer> build()
     {
-        auto address{boost::asio::ip::make_address(_address)};
+        auto address{ net::ip::make_address(_address) };
         auto config{ make_shared<TCPServerDependencies>(
-            TCPServerDependencies::tcp_endpoint(address, _port), 
+            tcp_endpoint(address, _port), 
             _session_executor, 
             _authenticator) };
         return make_shared<TCPServer>(config);
