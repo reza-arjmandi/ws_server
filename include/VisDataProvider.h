@@ -19,13 +19,13 @@ public:
     {
         auto size{ value_to<int>(parse( in ).at("size")) };
         std::vector<value> vals(size + 1);
-        vals[0] = {"time","level1","level2"};
+        vals[0] = {"time","level1"};
 
         int idx{1};
         while(size --> 0)
         {
             vals[idx++] = {
-                idx, (float)std::sin(x), (float)std::cos(x) 
+                idx, (float)(std::sin(x) / x) 
             };
             x++;
         }
@@ -37,7 +37,7 @@ public:
 
 private:
 
-    float x{ 0.0f };
+    float x{ 1.0f };
 
 
 };
